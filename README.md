@@ -8,12 +8,12 @@ performance on dataset TBD.
 
 
 
-
-
+[To google doc](https://docs.google.com/document/d/11dWmXMQnpLiXouUEvx1Cw2Yt88z-JniD-GohKHWwGX0/edit?usp=sharing
+)
 
 
 
 Group members:<br/>
 
 Ziming Fu  1370023<br/>
-JiaZhen Li<br/>
+JiaZhen Li  1501597<br/>

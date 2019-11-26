@@ -1,6 +1,8 @@
-# CMPUT-466_ML_Mini-Project
+# Machine Learning Mini-Project for CMPUT 466
 
-## Machine Learning Mini-Project for CMPUT 466
-
-A simple project for analyzing three algorithms TBD(Naive Bayes, Logistic Regression, Neural Network(1hl))
+This is a simple project for analyzing three algorithms TBD(Naive Bayes, Logistic Regression, Neural Network(1hl))
 performance on dataset TBD
+
+Group members:
+Ziming Fu  1370023
+JiaZhen Li

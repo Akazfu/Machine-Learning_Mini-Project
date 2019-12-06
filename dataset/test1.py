@@ -8,10 +8,12 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.model_selection import train_test_split
 from sklearn.feature_selection import RFE
 from sklearn.model_selection import cross_val_predict
+from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import classification_report
 from sklearn.metrics import roc_auc_score
 from sklearn.metrics import roc_curve
+from sklearn import metrics
 from scipy import stats
 
 data = pd.read_csv("adult.csv",header =0)
@@ -22,7 +24,7 @@ data = data.dropna()
 #print(data["y"].value_counts())
 #print(data)
 #print(data.groupby("y").mean())
-
+print(data.isnull().sum())
 #pd.crosstab(data.age,data.y).plot(kind='bar')
 #plt.title('Rate with age')
 #plt.xlabel('Age')
@@ -97,8 +99,7 @@ y = data_final.loc[:, data_final.columns == 'y']
 
 #if "SVM":
 cv = StratifiedKFold(n_splits=10)
-classifier = svm.SVC(kernel='linear', probability=True,
-                     random_state=random_state)
+classifier = svm.SVC(kernel='linear')
 
 tprs = []
 aucs = []

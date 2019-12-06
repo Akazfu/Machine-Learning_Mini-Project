@@ -56,7 +56,6 @@ data_final = pd.get_dummies(data_upsampled, columns=['workclass', 'education', '
 # Split dataset as target variable and feature variabes as arrays
 # X = data_final.iloc[:, :-1].values
 # y = data_final.iloc[:, -1].values
-
 X = data_final.loc[:, data_final.columns != 'y']
 y = data_final.loc[:, data_final.columns == 'y']
 # print(X)
@@ -67,7 +66,7 @@ sc = StandardScaler()
 X = sc.fit_transform(X)
 
 # Spliting X and y to test and train set
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2)
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2)
 
 # Just for Validation
 # X_train.to_csv('X_train.csv')
@@ -140,7 +139,7 @@ def get_results(model, X_train, X_test, y_train, y_test):
 # print(get_results(LogisticRegression(), X_train, X_test, y_train, y_test)[2])
 
 # # folds = StratifiedKFold(n_splits=5)
-kf = KFold(n_splits=10) # Define the split - into 2 folds 
+kf = KFold(n_splits=10) # Define the split - into 10 folds 
 kf.get_n_splits(X)
 
 # scores_lr = []
@@ -151,8 +150,7 @@ print(X.shape)
 print(y.shape)
 for train_index, test_index in kf.split(X):
        print("TRAIN:", train_index, "TEST:", test_index)
-       X_train, X_test = X[train_index], X[test_index]
-       y_train, y_test = y[train_index], y[test_index]
+       X_train, X_test, y_train, y_test = X[train_index], X[test_index], y[train_index], y[test_index]
        print(X_train.shape)
        print(X_test.shape)
        print(y_train.shape)       

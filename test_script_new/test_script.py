@@ -149,12 +149,31 @@ kf.get_n_splits(X)
 print(X.shape)
 print(y.shape)
 for train_index, test_index in kf.split(X):
-       print("TRAIN:", train_index, "TEST:", test_index)
-       X_train, X_test, y_train, y_test = X[train_index], X[test_index], y[train_index], y[test_index]
-       print(X_train.shape)
-       print(X_test.shape)
-       print(y_train.shape)       
-       print(y_test.shape)       
+       # print("TRAIN:", train_index, "TEST:", test_index)
+       # X_train, X_test, y_train, y_test = X.iloc[train_index], X.iloc[test_index], y.iloc[train_index], y.iloc[test_index]
+       Train_set = data_final.iloc[train_index]
+       X_train = Train_set.loc[:, data_final.columns != 'y']
+       y_train = Train_set.loc[:, data_final.columns == 'y']
+
+       Test_set = data_final.iloc[test_index]
+       X_test = Test_set.loc[:, data_final.columns != 'y']
+       y_test = Test_set.loc[:, data_final.columns == 'y']
+
+       # Applying standard scaling to get optimized result, avoiding bias
+       sc = StandardScaler()
+       X_train = sc.fit_transform(X_train)
+       X_test = sc.fit_transform(X_test)
+
+       # print(Train_set.shape)
+       # print(Test_set.shape)
+       # print(X_train.shape)
+       # print(X_test.shape)
+       # print(y_train)       
+       # print(y_test)     
+
+       print(get_results(LogisticRegression(), X_train, X_test, y_train, y_test)[0])
+       print(get_results(LogisticRegression(), X_train, X_test, y_train, y_test)[1])
+       print(get_results(LogisticRegression(), X_train, X_test, y_train, y_test)[2])  
 
 
 # Parameters Tuning via Grid Search

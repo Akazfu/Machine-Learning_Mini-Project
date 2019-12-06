@@ -23,15 +23,15 @@ data = data.dropna()
 #print(data)
 #print(data.groupby("y").mean())
 
-#pd.crosstab(data.capitalloss,data.y).plot(kind='bar')
-#plt.title('Frequency')
-#plt.xlabel('capitalloss')
-#plt.ylabel('Frequecy')
-#plt.savefig('capitalloss')
+#pd.crosstab(data.age,data.y).plot(kind='bar')
+#plt.title('Rate with age')
+#plt.xlabel('Age')
+#plt.ylabel('Rate')
+#plt.savefig('Agefig')
 #plt.show()
+##
 #
-
-#####classify the category feature#################
+######classify the category feature#################
 tem = list(data.columns)
 tem.remove('y')
 tem.remove('capitalgain')
@@ -246,21 +246,21 @@ difference =[]
 # SVM & Naive Bayes
 for i in range(length(y1_pred)):
     difference[i] = y1_pred[i]-y2_pred[i]
-    
+
 w, p = stats.wilcoxon(difference)
 print("SVM & Naive:w:",w,"p:",p)
 
 # SVM & logistic regression
 for i in range(length(y1_pred)):
     difference[i] = y1_pred[i]-y3_pred[i]
-    
+
 w, p = stats.wilcoxon(difference)
 print("SVM & Logistic:w:",w,"p:",p)
 
 # Naive Bayes & logistic regression
 for i in range(length(y1_pred)):
     difference[i] = y1_pred[i]-y3_pred[i]
-    
+
 w, p = stats.wilcoxon(difference)
 print("Naive Bayes & Logistic:w:",w,"p:",p)
 

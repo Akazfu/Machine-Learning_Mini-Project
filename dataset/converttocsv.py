@@ -10,9 +10,9 @@ with open('adult.data') as input_file:
           newLine[-1] = 0;
       elif newLine[-1] == " >50K":
           newLine[-1] = 1;
-      for i in newLine:
-          if i ==" ?":
-              newLine[-2]=""
+      for i in range(len(newLine)):
+          if newLine[i] ==" ?":
+              newLine[i]=""
 
       #print(newLine[-1])
 

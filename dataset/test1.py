@@ -16,13 +16,17 @@ from sklearn.metrics import roc_curve
 from sklearn import metrics
 from scipy import stats
 
-data = pd.read_csv("adult.csv",header =0)
+data = pd.read_csv("test.csv",header =0)
 data = data.dropna()
-
+#for i in data.columns.values.tolist():
+#    indexNames = data[data[i].values.tolist() == "?" ].index
+    
+#print(data[data['nativecountry']== "India"])
+#print(data['nativecountry'].head(16))
 ########Optimize feature#############
 
 #print(data["y"].value_counts())
-#print(data)
+#print(data.head(16))
 #print(data.groupby("y").mean())
 #print(data.isnull().sum())
 #pd.crosstab(data.age,data.y).plot(kind='bar')
@@ -32,12 +36,10 @@ data = data.dropna()
 #plt.savefig('Agefig')
 #plt.show()
 ##
-#
+##
 ######classify the category feature#################
 tem = list(data.columns)
 tem.remove('y')
-tem.remove('capitalgain')
-tem.remove('capitalloss')
 cat_vars = tem
 for var in cat_vars:
     cat_list='var'+'_'+var
@@ -59,6 +61,7 @@ data_final=data[to_keep]
 
 X = data_final.loc[:, data_final.columns != 'y']
 y = data_final.loc[:, data_final.columns == 'y']
+print(X.columns)
 #from imblearn.over_sampling import SMOTE
 #os = SMOTE(random_state=0)
 #X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
@@ -99,7 +102,7 @@ y = data_final.loc[:, data_final.columns == 'y']
 #
 n_samples, n_features = X.shape
 random_state = np.random.RandomState(0)
-X = np.c_[X, random_state.randn(n_samples, 200 * n_features)]
+X = np.c_[X, random_state.randn(n_samples,n_features)]
 
 #if "SVM":
 cv = StratifiedKFold(n_splits=10)

@@ -24,7 +24,7 @@ data = data.dropna()
 #print(data["y"].value_counts())
 #print(data)
 #print(data.groupby("y").mean())
-print(data.isnull().sum())
+#print(data.isnull().sum())
 #pd.crosstab(data.age,data.y).plot(kind='bar')
 #plt.title('Rate with age')
 #plt.xlabel('Age')
@@ -96,10 +96,15 @@ y = data_final.loc[:, data_final.columns == 'y']
 # Cross validation with ROC curve and stats data
 
 ####################################################################
+#
+n_samples, n_features = X.shape
+random_state = np.random.RandomState(0)
+X = np.c_[X, random_state.randn(n_samples, 200 * n_features)]
 
 #if "SVM":
 cv = StratifiedKFold(n_splits=10)
-classifier = svm.SVC(kernel='linear')
+classifier = svm.SVC(kernel='linear', probability=True,
+                     random_state=random_state)
 
 tprs = []
 aucs = []

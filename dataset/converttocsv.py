@@ -1,6 +1,6 @@
 import csv
 
-with open('adult.data') as input_file:
+with open('adult.test') as input_file:
    lines = input_file.readlines()
    newLines = []
    for line in lines:
@@ -14,6 +14,6 @@ with open('adult.data') as input_file:
 
       newLines.append( newLine )
 
-with open('adult.csv', 'wb') as test_file:
+with open('test.csv', 'wb') as test_file:
    file_writer = csv.writer(test_file)
    file_writer.writerows( newLines )

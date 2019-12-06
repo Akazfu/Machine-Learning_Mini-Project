@@ -20,7 +20,7 @@ data = pd.read_csv("test.csv",header =0)
 data = data.dropna()
 #for i in data.columns.values.tolist():
 #    indexNames = data[data[i].values.tolist() == "?" ].index
-    
+
 #print(data[data['nativecountry']== "India"])
 #print(data['nativecountry'].head(16))
 ########Optimize feature#############
@@ -102,7 +102,7 @@ print(X.columns)
 #
 n_samples, n_features = X.shape
 random_state = np.random.RandomState(0)
-X = np.c_[X, random_state.randn(n_samples,n_features)]
+X = np.c_[X, random_state.randn(n_samples, n_features)]
 
 #if "SVM":
 cv = StratifiedKFold(n_splits=10)
@@ -272,5 +272,3 @@ for i in range(length(y1_pred)):
 
 w, p = stats.wilcoxon(difference)
 print("Naive Bayes & Logistic:w:",w,"p:",p)
-
-

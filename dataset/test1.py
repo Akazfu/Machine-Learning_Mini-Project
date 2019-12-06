@@ -99,7 +99,7 @@ y = data_final.loc[:, data_final.columns == 'y']
 #
 n_samples, n_features = X.shape
 random_state = np.random.RandomState(0)
-X = np.c_[X, random_state.randn(n_samples, 200 * n_features)]
+X = np.c_[X, random_state.randn(n_samples, n_features)]
 
 #if "SVM":
 cv = StratifiedKFold(n_splits=10)

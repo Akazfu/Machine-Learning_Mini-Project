@@ -1,17 +1,15 @@
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-from scipy import stats
-import statistics 
+import matplotlib.pyplot as plt 
+import scikitplot as skplt
 
 from sklearn.utils import resample, shuffle
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder, StandardScaler
+from sklearn.model_selection import train_test_split, cross_val_predict, StratifiedKFold, KFold, cross_val_score
+from sklearn.metrics import classification_report, accuracy_score, precision_score, recall_score, f1_score, roc_auc_score, roc_curve
 from sklearn import svm
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
-from sklearn.model_selection import train_test_split, cross_val_predict, StratifiedKFold, KFold, cross_val_score
-from sklearn.metrics import accuracy_score, confusion_matrix, classification_report, roc_auc_score, roc_curve
-from sklearn.feature_selection import RFE
 
 
 #################################### Data Preprocessing ####################################
@@ -53,26 +51,27 @@ print('\n' * 4)
 def get_results(model, X_train, X_test, y_train, y_test):
        model.fit(X_train, y_train)
        pred = model.predict(X_test)
+       probs = model.predict_proba(X_test)
 
        cr = classification_report(y_test, pred)
-       cm = confusion_matrix(y_test, pred)
-       sc = model.score(X_test, y_test)
-       return cr, cm, sc
+       accuracy = accuracy_score(y_test, pred)
+       precision = precision_score(y_test, pred)
+       recall = recall_score(y_test, pred)
+       f1 = f1_score(y_test, pred)
+       skplt.metrics.plot_roc_curve(y_test, probs)
+       plt.savefig('roc.png')
+       return cr, accuracy, precision, recall, f1
 
 run_count = 0
 
 # Define the split - into 10 folds
-folds = KFold(n_splits=2)  
+folds = KFold(n_splits=10)
 
-# Accuracy list of different algorithms
-scores_lr = []
-scores_nb = []
-scores_svm = []
-
-# Parameters Tuning via Grid Search(for loop)
-# lrs = []
-# svms = []
-# nbs =[]
+# Metric Lists for the test results
+scores = []
+precisions = []
+recalls = []
+f1s = []
 
 for train_index, test_index in folds.split(data_final):
        run_count += 1
@@ -93,20 +92,34 @@ for train_index, test_index in folds.split(data_final):
        X_train = sc.fit_transform(X_train)
        X_test = sc.fit_transform(X_test)
 
+       # Parameters Tuning via Grid Search(for loop)
+       lr_params = {'C': [0.01, 0.1, 1], 'penalty': ['l1', 'l2']}
+       svm_params = {'C': [0.01, 0.1, 1], 'kernel': ['linear', 'poly', 'rbf']}
+       nb_params = {'priors':[[0.5, 0.5],[0.1, 0.9]]}
+
+       # Algorithms to test
        lr = LogisticRegression()
        nb = GaussianNB()
        svmc = svm.SVC()
 
-       print(get_results(lr, X_train, X_test, y_train, y_test)[0])
-       print(get_results(nb, X_train, X_test, y_train, y_test)[0])
-       print(get_results(svmc, X_train, X_test, y_train, y_test)[0])
+       cr, accuracy, precision, recall, f1 = get_results(lr, X_train, X_test, y_train, y_test)
+       # cr, accuracy, precision, recall, f1 = get_results(nb, X_train, X_test, y_train, y_test)
+       # cr, accuracy, precision, recall, f1 = get_results(svmc, X_train, X_test, y_train, y_test)
        
-       scores_lr.append(get_results(lr, X_train, X_test, y_train, y_test)[2])
-       scores_nb.append(get_results(nb, X_train, X_test, y_train, y_test)[2])
-       scores_svm.append(get_results(svmc, X_train, X_test, y_train, y_test)[2])
-
+       print(cr)
+       scores.append(accuracy)
+       precisions.append(precision)
+       recalls.append(recall)
+       f1s.append(f1)
+       
 print('\n' * 2)
 print('*' * 80)
-print("Accuracy for LogisticRegression: %0.2f (+/- %0.2f)" % (statistics.mean(scores_lr), statistics.stdev(scores_lr)))
-print("Accuracy for GaussianNB: %0.2f (+/- %0.2f)" % (statistics.mean(scores_nb), statistics.stdev(scores_nb)))
-print("Accuracy for SVM: %0.2f (+/- %0.2f)" % (statistics.mean(scores_svm), statistics.stdev(scores_svm)))
+print('LogisticRegression: Param:')
+# print('GaussianNB: Param:')
+# print('svm.SVC: Param:')
+
+print("Accuracy: %0.6f (Std: +/- %0.6f), Variance: %0.6f" % (np.mean(scores), np.std(scores), np.var(scores)))
+print("Precision: %0.6f (Std: +/- %0.6f), Variance: %0.6f" % (np.mean(precisions), np.std(precisions), np.var(scores)))
+print("Recall: %0.6f (Std: +/- %0.6f), Variance: %0.6f" % (np.mean(recalls), np.std(recalls), np.var(recalls)))
+print("F1: %0.6f (Std: +/- %0.6f), Variance: %0.6f" % (np.mean(f1s), np.std(f1s), np.var(f1s)))
+

@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt 
 import scikitplot as skplt
+from scipy import stats
 
 from sklearn.utils import resample, shuffle
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder, StandardScaler
@@ -97,14 +98,14 @@ for train_index, test_index in folds.split(data_final):
        # Parameters Tuning via Grid Search(for loop)
        lr_params = {'C': [0.01, 0.1, 1], 'penalty': ['l1', 'l2']}
        svm_params = {'C': [0.01, 0.1, 1], 'kernel': ['linear', 'poly', 'rbf']}
-       nb_params = {'priors':[[0.5, 0.5],[0.1, 0.9]]}
+       nb_params = {'priors':[[0.1, 0.9]]}
 
        # Algorithms to test
        lr = LogisticRegression(penalty = 'none', C = 0.0001)
        nb = GaussianNB()
-       svmc = svm.SVC(kernel = 'linear', C = 1.0, probability = True)
+       svmc = svm.SVC(kernel = 'linear', C = 0.0001, probability = True)
 
-       cr, accuracy, precision, recall, f1, auc = get_results(svmc, X_train, X_test, y_train, y_test)
+       cr, accuracy, precision, recall, f1, auc = get_results(nb, X_train, X_test, y_train, y_test)
        # cr, accuracy, precision, recall, f1 = get_results(nb, X_train, X_test, y_train, y_test)
        # cr, accuracy, precision, recall, f1 = get_results(svmc, X_train, X_test, y_train, y_test)
        
@@ -118,8 +119,8 @@ for train_index, test_index in folds.split(data_final):
 print('\n' * 2)
 print('*' * 80)
 # print('LogisticRegression:  Param:(penalty = none):')
-print('svm.SVC:  Param:(kernel = linear, C = 1):')
-# print('GaussianNB: Param:')
+# print('svm.SVC:  Param:(kernel = linear, C = 0.0001):')
+print('GaussianNB:  Param:(no priors):')
 
 print("Accuracy: %0.6f (Std: +/- %0.6f), Variance: %0.6f" % (np.mean(scores), np.std(scores), np.var(scores)))
 print("Precision: %0.6f (Std: +/- %0.6f), Variance: %0.6f" % (np.mean(precisions), np.std(precisions), np.var(scores)))
@@ -127,3 +128,46 @@ print("Recall: %0.6f (Std: +/- %0.6f), Variance: %0.6f" % (np.mean(recalls), np.
 print("F1: %0.6f (Std: +/- %0.6f), Variance: %0.6f" % (np.mean(f1s), np.std(f1s), np.var(f1s)))
 print("Auc: %0.6f (Std: +/- %0.6f), Variance: %0.6f" % (np.mean(aucs), np.std(aucs), np.var(f1s)))
 
+#################################### Wilcoxon signed rank test ####################################
+# X = data_final.loc[:, data_final.columns != 'y']
+# y = data_final.loc[:, data_final.columns == 'y']
+
+# # y1_pred = cross_val_predict(svm.SVC(kernel='linear'), X, np.ravel(y,order = 'C'), cv=2)
+# y2_pred = cross_val_predict(GaussianNB(), X, np.ravel(y,order = 'C'), cv=2)
+# y3_pred = cross_val_predict(LogisticRegression(), X, np.ravel(y,order = 'C'), cv=2)
+
+# difference =[]
+# # # SVM & Naive Bayes
+# # for i in range(len(y1_pred)):
+# #    difference[i] = y1_pred[i]-y2_pred[i]
+
+# # w, p = stats.wilcoxon(difference)
+# # print("SVM & Naive:w:",w,"p:",p)
+
+# # # SVM & logistic regression
+# # for i in range(len(y1_pred)):
+# #    difference[i] = y1_pred[i]-y3_pred[i]
+
+# # w, p = stats.wilcoxon(difference)
+# # print("SVM & Logistic:w:",w,"p:",p)
+
+# # Naive Bayes & logistic regression
+# for i in range(len(y2_pred)):
+#    difference[i] = y2_pred[i]-y3_pred[i]
+
+# w, p = stats.wilcoxon(difference)
+# print("Naive Bayes & Logistic:w:",w,"p:",p)
+
+# print('GaussianNB:  Param:(no priors):')
+# print('Accuracy: 0.500133 (Std: +/- 0.016439), Variance: 0.000270')
+# print('Recall: 0.540100 (Std: +/- 0.000739), Variance: 0.000000')
+# print('Precision: 0.472000 (Std: +/- 0.400000), Variance: 0.000270')
+# print('F1: 0.511200 (Std: +/- 0.001076), Variance: 0.000001')
+# print('Auc: 0.500135 (Std: +/- 0.000269), Variance: 0.000001')
+
+# print('GaussianNB:  Param:(priors = [0.1, 0.9]):')
+# print('Accuracy: 0.499667 (Std: +/- 0.012825), Variance: 0.000164')
+# print('Precision: 0.522000 (Std: +/- 0.000830), Variance: 0.000164')
+# print('Recall: 0.451100 (Std: +/- 0.607800), Variance: 0.000000')
+# print('F1: 0.514320 (Std: +/- 0.000116), Variance: 0.000011')
+# print('Auc: 0.499676 (Std: +/- 0.000523), Variance: 0.000003')

@@ -58,9 +58,10 @@ def get_results(model, X_train, X_test, y_train, y_test):
        precision = precision_score(y_test, pred)
        recall = recall_score(y_test, pred)
        f1 = f1_score(y_test, pred)
+       auc = roc_auc_score(y_test, pred)
        skplt.metrics.plot_roc_curve(y_test, probs)
        plt.savefig('roc.png')
-       return cr, accuracy, precision, recall, f1
+       return cr, accuracy, precision, recall, f1, auc
 
 run_count = 0
 
@@ -72,6 +73,7 @@ scores = []
 precisions = []
 recalls = []
 f1s = []
+aucs = []
 
 for train_index, test_index in folds.split(data_final):
        run_count += 1
@@ -98,11 +100,11 @@ for train_index, test_index in folds.split(data_final):
        nb_params = {'priors':[[0.5, 0.5],[0.1, 0.9]]}
 
        # Algorithms to test
-       lr = LogisticRegression()
+       lr = LogisticRegression(penalty = 'none', C = 0.0001)
        nb = GaussianNB()
-       svmc = svm.SVC()
+       svmc = svm.SVC(kernel = 'linear', C = 1.0, probability = True)
 
-       cr, accuracy, precision, recall, f1 = get_results(lr, X_train, X_test, y_train, y_test)
+       cr, accuracy, precision, recall, f1, auc = get_results(svmc, X_train, X_test, y_train, y_test)
        # cr, accuracy, precision, recall, f1 = get_results(nb, X_train, X_test, y_train, y_test)
        # cr, accuracy, precision, recall, f1 = get_results(svmc, X_train, X_test, y_train, y_test)
        
@@ -111,15 +113,17 @@ for train_index, test_index in folds.split(data_final):
        precisions.append(precision)
        recalls.append(recall)
        f1s.append(f1)
+       aucs.append(auc)
        
 print('\n' * 2)
 print('*' * 80)
-print('LogisticRegression: Param:')
+# print('LogisticRegression:  Param:(penalty = none):')
+print('svm.SVC:  Param:(kernel = linear, C = 1):')
 # print('GaussianNB: Param:')
-# print('svm.SVC: Param:')
 
 print("Accuracy: %0.6f (Std: +/- %0.6f), Variance: %0.6f" % (np.mean(scores), np.std(scores), np.var(scores)))
 print("Precision: %0.6f (Std: +/- %0.6f), Variance: %0.6f" % (np.mean(precisions), np.std(precisions), np.var(scores)))
 print("Recall: %0.6f (Std: +/- %0.6f), Variance: %0.6f" % (np.mean(recalls), np.std(recalls), np.var(recalls)))
 print("F1: %0.6f (Std: +/- %0.6f), Variance: %0.6f" % (np.mean(f1s), np.std(f1s), np.var(f1s)))
+print("Auc: %0.6f (Std: +/- %0.6f), Variance: %0.6f" % (np.mean(aucs), np.std(aucs), np.var(f1s)))
 
